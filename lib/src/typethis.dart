@@ -27,7 +27,7 @@ class TypeThis extends StatefulWidget {
   final TextAlign? textAlign;
 
   /// [TextStyle] for the [string].
-  /// 
+  ///
   /// If non-null, the style to use for this text. Otherwise,
   /// [DefaultTextStyle] will be used.
   final TextStyle? style;
