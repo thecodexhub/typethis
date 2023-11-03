@@ -1,3 +1,3 @@
 # typethis
 
-A Flutter package for Typeing Animation.
+A Flutter package for Typing Animation.
