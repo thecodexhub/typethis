@@ -30,6 +30,13 @@ void main() {
           returnsNormally,
         );
       });
+
+      test('throws when speed is less than 0', () {
+        expect(
+          () => buildSubject(speed: -10),
+          throwsA(isA<AssertionError>()),
+        );
+      });
     });
 
     group(': text widget', () {
