@@ -6,7 +6,7 @@ A Flutter package for Typing Animation.
 
 ```dart
 TypeThis(
-  string: 'Hi there! How are you doing?',
+  string: 'Hello how are you doing?',
   speed: 50,
   style: TextStyle(fontSize: 18, color: Colors.black),
 );
