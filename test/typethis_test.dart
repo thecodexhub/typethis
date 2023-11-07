@@ -12,12 +12,14 @@ void main() {
     Widget buildSubject({
       String string = testString,
       int speed = testSpeed,
+      bool showBlinkingCursor = false,
       TextAlign textAlign = TextAlign.center,
       TextStyle style = const TextStyle(),
     }) {
       return TypeThis(
         string: string,
         speed: speed,
+        showBlinkingCursor: showBlinkingCursor,
         textAlign: textAlign,
         style: style,
       );
@@ -119,6 +121,36 @@ void main() {
           final textWidget = widgetTester.firstWidget<Text>(finder);
           expect(textWidget.style?.fontSize, equals(testStyle.fontSize));
           expect(textWidget.style?.color, equals(testStyle.color));
+        },
+      );
+
+      testWidgets(
+        'doesnot show blinking cursor when showBlinkingCursor is false',
+        (widgetTester) async {
+          await widgetTester.pumpApp(buildSubject());
+          await widgetTester.pump();
+
+          final blinkingCursorFinder = find.byType(BlinkingCursor);
+          expect(blinkingCursorFinder, findsNothing);
+
+          final sizedBoxFinder = find.byType(SizedBox);
+          expect(sizedBoxFinder, findsOneWidget);
+        },
+      );
+
+      testWidgets(
+        'shows blinking cursor when showBlinkingCursor is true',
+        (widgetTester) async {
+          await widgetTester.pumpApp(
+            buildSubject(showBlinkingCursor: true),
+          );
+          await widgetTester.pump();
+
+          final blinkingCursorFinder = find.byType(BlinkingCursor);
+          expect(blinkingCursorFinder, findsOneWidget);
+
+          final sizedBoxFinder = find.byType(SizedBox);
+          expect(sizedBoxFinder, findsNothing);
         },
       );
     });
