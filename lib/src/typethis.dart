@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/widgets.dart';
+import 'package:typethis/typethis.dart';
 
 /// {@template typethis}
 /// Widget that creates the "typing" animation by making characters
@@ -24,6 +25,16 @@ class TypeThis extends StatefulWidget {
   /// Default value is 50. That means each character in the [string] will render
   /// at a difference of 50 milliseconds.
   final int speed;
+
+  /// Whether to show blinking cursor.
+  ///
+  /// Default is set to `true`.
+  final bool showBlinkingCursor;
+
+  /// The text character shown as the cursor.
+  ///
+  /// Default is `_` (underscore).
+  final String? cursorText;
 
   /// How the text should be aligned horizontally.
   final TextAlign? textAlign;
@@ -132,6 +143,8 @@ class TypeThis extends StatefulWidget {
     super.key,
     required this.string,
     this.speed = 50,
+    this.showBlinkingCursor = true,
+    this.cursorText,
     this.textAlign,
     this.style,
     this.strutStyle,
@@ -191,22 +204,30 @@ class _TypeThisState extends State<TypeThis>
     final stringToRender = widget.string.substring(0, _animation.value);
     final defaultTextStyle = DefaultTextStyle.of(context);
 
-    return Text(
-      stringToRender,
-      key: const Key('typethis_text'),
-      textAlign: widget.textAlign ?? defaultTextStyle.textAlign,
-      style: defaultTextStyle.style.merge(widget.style),
-      strutStyle: widget.strutStyle,
-      textDirection: widget.textDirection,
-      locale: widget.locale,
-      softWrap: widget.softWrap ?? defaultTextStyle.softWrap,
-      overflow: widget.overflow,
-      textScaleFactor: widget.textScaleFactor,
-      maxLines: widget.maxLines,
-      semanticsLabel: widget.semanticsLabel,
-      textWidthBasis: widget.textWidthBasis,
-      textHeightBehavior: widget.textHeightBehavior,
-      selectionColor: widget.selectionColor,
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          stringToRender,
+          key: const Key('typethis_text'),
+          textAlign: widget.textAlign ?? defaultTextStyle.textAlign,
+          style: defaultTextStyle.style.merge(widget.style),
+          strutStyle: widget.strutStyle,
+          textDirection: widget.textDirection,
+          locale: widget.locale,
+          softWrap: widget.softWrap ?? defaultTextStyle.softWrap,
+          overflow: widget.overflow,
+          textScaleFactor: widget.textScaleFactor,
+          maxLines: widget.maxLines,
+          semanticsLabel: widget.semanticsLabel,
+          textWidthBasis: widget.textWidthBasis,
+          textHeightBehavior: widget.textHeightBehavior,
+          selectionColor: widget.selectionColor,
+        ),
+        widget.showBlinkingCursor
+            ? BlinkingCursor(cursorText: widget.cursorText)
+            : const SizedBox.shrink(),
+      ],
     );
   }
 }
