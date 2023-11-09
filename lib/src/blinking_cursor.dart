@@ -10,7 +10,7 @@ import 'package:flutter/widgets.dart';
 /// {@endtemplate}
 class BlinkingCursor extends StatefulWidget {
   /// The character which will be displayed as cursor.
-  /// 
+  ///
   /// Default `cursorText` is _ (underscore).
   final String? cursorText;
 
