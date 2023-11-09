@@ -2,9 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
+/// {@template blinking_cursor}
+/// Widget that creates a blinking cursor. The blinking effect
+/// occurs every 500 milliseconds.
+///
+/// By default, _ (underscore) is used as the cursor.
+/// {@endtemplate}
 class BlinkingCursor extends StatefulWidget {
-  const BlinkingCursor({super.key, this.cursorText});
+  /// The character which will be displayed as cursor.
+  /// 
+  /// Default `cursorText` is _ (underscore).
   final String? cursorText;
+
+  /// {@macro blinking_cursor}
+  const BlinkingCursor({super.key, this.cursorText});
 
   @override
   State<BlinkingCursor> createState() => _BlinkingCursorState();
