@@ -138,8 +138,37 @@ class TypeThis extends StatefulWidget {
   /// (semi-transparent grey).
   final Color? selectionColor;
 
+  /// A [TypeThisController] that listens to steps attached
+  /// with a timer. Listens to the [ChangeNotifier], and helps rebuild
+  /// the widget after each `notifyListeners()`.
+  /// 
+  /// This variable is public for testing.
+  /// 
+  /// DO NOT use this variable. Instead, use the `controller` getter.
+  @visibleForTesting
+  final TypeThisController typeThisController;
+
+  /// A controller for the [TypeThis] widget.
+  ///
+  /// It facilitates different operations on the typing animation.
+  /// For example, the `reset()` method resets the typing animation,
+  /// and restarts it from the beginning.
+  ///
+  /// ```dart
+  /// // Extract the [TypeThis] widget into a separate variable.
+  /// final typeThisWidget = TypeThis(
+  ///   string: 'Hi there! How are you doing?',
+  ///   speed: 50,
+  ///   style: TextStyle(fontSize: 18, color: Colors.black),
+  /// );
+  ///
+  /// // Resets the animation
+  /// typeThisWidget.controller.reset();
+  /// ```
+  TypeThisController get controller => typeThisController;
+
   /// {@macro typethis}
-  const TypeThis({
+  TypeThis({
     super.key,
     required this.string,
     this.speed = 50,
@@ -158,72 +187,53 @@ class TypeThis extends StatefulWidget {
     this.textWidthBasis,
     this.textHeightBehavior,
     this.selectionColor,
-  }) : assert(
+  })  : typeThisController = TypeThisController(
+          Duration(milliseconds: speed),
+          string.length,
+        ),
+        assert(
           speed >= 0,
           'spped must either be 0 or greater than 0',
         );
 
   @override
-  State<StatefulWidget> createState() => _TypeThisState();
+  State<TypeThis> createState() => _TypeThisState();
 }
 
-class _TypeThisState extends State<TypeThis>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _animationController;
-  late final Animation<int> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _animationController = AnimationController(vsync: this);
-    _setAnimationDuration();
-
-    _animation = IntTween(begin: 0, end: widget.string.length)
-        .animate(_animationController);
-
-    _animation.addListener(() => setState(() {}));
-    _animationController.forward();
-  }
-
-  void _setAnimationDuration() {
-    final charactersCount = widget.string.length;
-    _animationController.duration = Duration(
-      milliseconds: charactersCount * widget.speed,
-    );
-  }
-
+class _TypeThisState extends State<TypeThis> {
   @override
   void dispose() {
-    _animationController.dispose();
+    widget.typeThisController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final stringToRender = widget.string.substring(0, _animation.value);
     final defaultTextStyle = DefaultTextStyle.of(context);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          stringToRender,
-          key: const Key('typethis_text'),
-          textAlign: widget.textAlign ?? defaultTextStyle.textAlign,
-          style: defaultTextStyle.style.merge(widget.style),
-          strutStyle: widget.strutStyle,
-          textDirection: widget.textDirection,
-          locale: widget.locale,
-          softWrap: widget.softWrap ?? defaultTextStyle.softWrap,
-          overflow: widget.overflow,
-          textScaleFactor: widget.textScaleFactor,
-          maxLines: widget.maxLines,
-          semanticsLabel: widget.semanticsLabel,
-          textWidthBasis: widget.textWidthBasis,
-          textHeightBehavior: widget.textHeightBehavior,
-          selectionColor: widget.selectionColor,
-        ),
+        ListenableBuilder(
+            listenable: widget.typeThisController,
+            builder: (context, _) {
+              return Text(
+                widget.string.substring(0, widget.typeThisController.steps),
+                textAlign: widget.textAlign ?? defaultTextStyle.textAlign,
+                style: defaultTextStyle.style.merge(widget.style),
+                strutStyle: widget.strutStyle,
+                textDirection: widget.textDirection,
+                locale: widget.locale,
+                softWrap: widget.softWrap ?? defaultTextStyle.softWrap,
+                overflow: widget.overflow,
+                textScaleFactor: widget.textScaleFactor,
+                maxLines: widget.maxLines,
+                semanticsLabel: widget.semanticsLabel,
+                textWidthBasis: widget.textWidthBasis,
+                textHeightBehavior: widget.textHeightBehavior,
+                selectionColor: widget.selectionColor,
+              );
+            }),
         widget.showBlinkingCursor
             ? BlinkingCursor(cursorText: widget.cursorText)
             : const SizedBox.shrink(),
