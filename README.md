@@ -1,6 +1,7 @@
 # TypeThis
 
 [![build](https://github.com/thecodexhub/typethis/actions/workflows/main.yml/badge.svg)](https://github.com/thecodexhub/typethis/actions)
+[![codecov](https://codecov.io/gh/thecodexhub/typethis/graph/badge.svg?token=7FY2DF2DS1)](https://codecov.io/gh/thecodexhub/typethis)
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 [![Package Version](https://img.shields.io/pub/v/typethis.svg)](https://pub.dev/packages/typethis)
 

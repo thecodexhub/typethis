@@ -39,7 +39,7 @@ jobs:
           path: ./coverage/lcov.info
           min_coverage: 100
 
-      - name: Upload coverage reports to Codecov
+      - name: 📈 Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
