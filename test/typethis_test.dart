@@ -9,7 +9,7 @@ void main() {
     const testString = 'This is a test string';
     const testSpeed = 50;
 
-    Widget buildSubject({
+    TypeThis buildSubject({
       String string = testString,
       int speed = testSpeed,
       bool showBlinkingCursor = false,
@@ -28,7 +28,7 @@ void main() {
     group(': constructor', () {
       test('works perfectly', () {
         expect(
-          () => const TypeThis(string: testString),
+          () => TypeThis(string: testString),
           returnsNormally,
         );
       });
@@ -37,6 +37,16 @@ void main() {
         expect(
           () => buildSubject(speed: -10),
           throwsA(isA<AssertionError>()),
+        );
+      });
+    });
+
+    group(': controller', () {
+      test('works perfectly', () {
+        final typeThisWidget = buildSubject();
+        expect(
+          typeThisWidget.typeThisController,
+          equals(typeThisWidget.controller),
         );
       });
     });
@@ -76,7 +86,9 @@ void main() {
           'has finished rendereing and whole string is present',
           (widgetTester) async {
             await widgetTester.pumpApp(buildSubject());
-            await widgetTester.pumpAndSettle();
+            await widgetTester.pump(
+              const Duration(milliseconds: testSpeed * testString.length),
+            );
 
             final finder = find.byType(Text);
             expect(finder, findsOneWidget);
