@@ -141,9 +141,9 @@ class TypeThis extends StatefulWidget {
   /// A [TypeThisController] that listens to steps attached
   /// with a timer. Listens to the [ChangeNotifier], and helps rebuild
   /// the widget after each `notifyListeners()`.
-  /// 
+  ///
   /// This variable is public for testing.
-  /// 
+  ///
   /// DO NOT use this variable. Instead, use the `controller` getter.
   @visibleForTesting
   final TypeThisController typeThisController;

@@ -9,7 +9,10 @@ void main() {
     });
 
     test('timer increments steps and notifies listeners', () async {
-      final controller = TypeThisController(const Duration(milliseconds: 100), 5);
+      final controller = TypeThisController(
+        const Duration(milliseconds: 100),
+        5,
+      );
       expect(controller.steps, 0);
 
       await Future.delayed(const Duration(milliseconds: 350));
@@ -17,7 +20,10 @@ void main() {
     });
 
     test('timer stops when steps reach maxBoundLength', () async {
-      final controller = TypeThisController(const Duration(milliseconds: 100), 3);
+      final controller = TypeThisController(
+        const Duration(milliseconds: 100),
+        3,
+      );
 
       await Future.delayed(const Duration(milliseconds: 400));
       expect(controller.steps, 3);
@@ -26,7 +32,10 @@ void main() {
     });
 
     test('reset method resets the controller', () async {
-      final controller = TypeThisController(const Duration(milliseconds: 100), 5);
+      final controller = TypeThisController(
+        const Duration(milliseconds: 100),
+        5,
+      );
       final previousTimer = controller.timer;
 
       await Future.delayed(const Duration(milliseconds: 300));
@@ -38,7 +47,10 @@ void main() {
     });
 
     test('multiple resets work correctly', () async {
-      final controller = TypeThisController(const Duration(milliseconds: 100), 5);
+      final controller = TypeThisController(
+        const Duration(milliseconds: 100),
+        5,
+      );
       final firstTimer = controller.timer;
 
       await Future.delayed(const Duration(milliseconds: 300));
