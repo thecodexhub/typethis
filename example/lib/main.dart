@@ -10,19 +10,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final typeThisWidget = TypeThis(
+      string: 'Hi there! How are you doing?',
+      speed: 100,
+      style: const TextStyle(fontSize: 20),
+    );
+
     return MaterialApp(
       title: 'Flutter TypeThis Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.deepPurple,
       ),
-      home: const Scaffold(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('TypeThis Example'),
+        ),
         body: Center(
-          child: TypeThis(
-            string: 'Hello how are you doing?',
-            speed: 100,
-            style: TextStyle(fontSize: 20),
-          ),
+          child: typeThisWidget,
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => typeThisWidget.controller.reset(),
+          child: const Icon(Icons.refresh),
         ),
       ),
     );
