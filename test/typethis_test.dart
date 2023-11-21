@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use_from_same_package
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:typethis/typethis.dart';
@@ -15,6 +17,7 @@ void main() {
       bool showBlinkingCursor = false,
       TextAlign textAlign = TextAlign.center,
       TextStyle style = const TextStyle(),
+      double? textScaleFactor,
     }) {
       return TypeThis(
         string: string,
@@ -22,6 +25,7 @@ void main() {
         showBlinkingCursor: showBlinkingCursor,
         textAlign: textAlign,
         style: style,
+        textScaleFactor: textScaleFactor,
       );
     }
 
@@ -98,6 +102,27 @@ void main() {
           },
         );
       });
+
+      testWidgets(
+        'textScaleFactor works perfectly as a deprecated member',
+        (widgetTester) async {
+          const textScaleFactor = 2.0;
+
+          await widgetTester.pumpApp(
+            buildSubject(textScaleFactor: textScaleFactor),
+          );
+          await widgetTester.pumpAndSettle();
+
+          final finder = find.byType(Text);
+          expect(finder, findsOneWidget);
+
+          final textWidget = widgetTester.firstWidget<Text>(finder);
+          expect(
+            textWidget.textScaler,
+            equals(const TextScaler.linear(textScaleFactor)),
+          );
+        },
+      );
 
       testWidgets(
         'textAlign property is same as provided',

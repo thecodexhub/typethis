@@ -83,6 +83,24 @@ class TypeThis extends StatefulWidget {
   /// from the nearest [DefaultTextStyle] ancestor will be used.
   final TextOverflow? overflow;
 
+  /// Deprecated. Will be removed in a future version of Flutter. Use
+  /// [textScaler] instead.
+  ///
+  /// The number of font pixels for each logical pixel.
+  ///
+  /// For example, if the text scale factor is 1.5, text will be 50% larger than
+  /// the specified font size.
+  ///
+  /// The value given to the constructor as textScaleFactor. If null, will
+  /// use the [MediaQueryData.textScaleFactor] obtained from the ambient
+  /// [MediaQuery], or 1.0 if there is no [MediaQuery] in scope.
+  @Deprecated(
+    'Use textScaler instead. '
+    'Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. '
+    'This feature was deprecated after v3.12.0-2.0.pre.',
+  )
+  final double? textScaleFactor;
+
   /// {@macro flutter.painting.textPainter.textScaler}
   final TextScaler? textScaler;
 
@@ -174,6 +192,12 @@ class TypeThis extends StatefulWidget {
     this.locale,
     this.softWrap,
     this.overflow,
+    @Deprecated(
+      'Use textScaler instead. '
+      'Use of textScaleFactor was deprecated in preparation for the upcoming nonlinear text scaling support. '
+      'This feature was deprecated after v3.12.0-2.0.pre.',
+    )
+    this.textScaleFactor,
     this.textScaler,
     this.maxLines,
     this.semanticsLabel,
@@ -187,6 +211,10 @@ class TypeThis extends StatefulWidget {
         assert(
           speed >= 0,
           'spped must either be 0 or greater than 0',
+        ),
+        assert(
+          textScaler == null || textScaleFactor == null,
+          'textScaleFactor is deprecated and cannot be specified when textScaler is specified.',
         );
 
   @override
@@ -203,6 +231,10 @@ class _TypeThisState extends State<TypeThis> {
   @override
   Widget build(BuildContext context) {
     final defaultTextStyle = DefaultTextStyle.of(context);
+    // ignore: deprecated_member_use_from_same_package
+    final textScaleFactor = widget.textScaleFactor;
+    final textScaler = widget.textScaler ??
+        (textScaleFactor != null ? TextScaler.linear(textScaleFactor) : null);
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -219,7 +251,7 @@ class _TypeThisState extends State<TypeThis> {
                 locale: widget.locale,
                 softWrap: widget.softWrap ?? defaultTextStyle.softWrap,
                 overflow: widget.overflow,
-                textScaler: widget.textScaler,
+                textScaler: textScaler,
                 maxLines: widget.maxLines,
                 semanticsLabel: widget.semanticsLabel,
                 textWidthBasis: widget.textWidthBasis,
