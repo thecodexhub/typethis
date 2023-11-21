@@ -66,5 +66,45 @@ void main() {
       expect(secondTimer?.isActive, false);
       expect(controller.timer?.isActive, true);
     });
+
+    test('freeze method freezes the controller', () async {
+      final controller = TypeThisController(
+        const Duration(milliseconds: 100),
+        5,
+      );
+      final previousTimer = controller.timer;
+
+      expect(previousTimer?.isActive, true);
+
+      await Future.delayed(const Duration(milliseconds: 350));
+      controller.freeze();
+
+      expect(controller.timer?.isActive, false);
+      expect(controller.steps, equals(3));
+    });
+
+    test(
+      'unfreeze method resumes the controller from freezing point',
+      () async {
+        final controller = TypeThisController(
+          const Duration(milliseconds: 100),
+          7,
+        );
+        final previousTimer = controller.timer;
+
+        expect(previousTimer?.isActive, true);
+
+        await Future.delayed(const Duration(milliseconds: 350));
+        controller.freeze();
+
+        expect(controller.steps, equals(3));
+
+        controller.unfreeze();
+        await Future.delayed(const Duration(milliseconds: 250));
+
+        expect(controller.timer?.isActive, true);
+        expect(controller.steps, equals(5));
+      },
+    );
   });
 }

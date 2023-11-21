@@ -68,6 +68,34 @@ class TypeThisController with ChangeNotifier {
     _startTimerAndNotify();
   }
 
+  /// Freezes the typing animation.
+  ///
+  /// ```dart
+  /// // Extract the [TypeThis] widget into a separate variable.
+  /// final typeThisWidget = TypeThis(
+  ///   string: 'Hi there! How are you doing?',
+  ///   speed: 50,
+  ///   style: TextStyle(fontSize: 18, color: Colors.black),
+  /// );
+  ///
+  /// // Freezes the animation
+  /// typeThisWidget.controller.freeze();
+  /// ```
+  void freeze() {
+    timer?.cancel();
+  }
+
+  /// Unfreezes the typing animation, means the animation resumes
+  /// from where it was frozen last time.
+  void unfreeze() {
+    // for safety, if unfreeze() is called without freeze() being called
+    // previously.
+    timer?.cancel();
+    if (_steps != _maxBoundLength) {
+      _startTimerAndNotify();
+    }
+  }
+
   @override
   void dispose() {
     timer?.cancel();
