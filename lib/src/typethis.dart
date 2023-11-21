@@ -83,7 +83,7 @@ class TypeThis extends StatefulWidget {
   /// from the nearest [DefaultTextStyle] ancestor will be used.
   final TextOverflow? overflow;
 
-    /// {@macro flutter.painting.textPainter.textScaler}
+  /// {@macro flutter.painting.textPainter.textScaler}
   final TextScaler? textScaler;
 
   /// An optional maximum number of lines for the text to span, wrapping if necessary.
