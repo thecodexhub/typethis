@@ -1,3 +1,8 @@
+## 0.1.1
+
+- chore(deps): bump to flutter version 3.16.0
+- feat: deprecate `textScaleFactor` in favor of `textScaler`
+
 ## 0.1.0
 
 - feat(controller): add `TypeThisController` for reset functionality
