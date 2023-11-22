@@ -43,7 +43,7 @@ typeThisWidget.controller.unfreeze();
 
 ## Demo
 
-[![Demo](screenshots/typethis.gif)](https://github.com/thecodexhub/typethis)
+[![Demo](demo/typethis.gif)](https://github.com/thecodexhub/typethis)
 
 ## License
 
