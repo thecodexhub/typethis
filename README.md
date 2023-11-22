@@ -27,6 +27,20 @@ final typeThisWidget = TypeThis(
 typeThisWidget.controller.reset();
 ```
 
+## Freeze (pause) the animation
+
+```dart
+// Call the `freeze()` method on controller to freeze/pause the typing animation.
+typeThisWidget.controller.freeze();
+```
+
+## Unfreeze (resume) the animation
+
+```dart
+// Call the `unfreeze()` method on controller to unfreeze/resume the typing animation.
+typeThisWidget.controller.unfreeze();
+```
+
 ## Demo
 
 [![Demo](screenshots/typethis.gif)](https://github.com/thecodexhub/typethis)
@@ -38,9 +52,6 @@ The project is released under the [MIT License](LICENSE). Learn more about it, [
 ---
 
 <p align="center">
-  <a href="https://github.com/thecodexhub">
-    <img width="75px" src="https://avatars.githubusercontent.com/u/56641059?v=4" alt="thecodexhub">
-  </a>
   <p align="center">
     Developed and Maintained with 💜 by <a href="https://github.com/thecodexhub">thecodexhub</a>
   </p>
