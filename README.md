@@ -5,7 +5,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 [![Package Version](https://img.shields.io/pub/v/typethis.svg)](https://pub.dev/packages/typethis)
 
-A flutter package that aims to simplify versatile typing animation with reset functionality.
+A flutter package that aims to simplify versatile typing animation with reset, freeze and unfreeze functionality.
 
 ## Create a TypeThis widget
 
