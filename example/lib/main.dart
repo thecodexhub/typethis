@@ -1,3 +1,4 @@
+import 'package:example/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:typethis/typethis.dart';
 
@@ -13,24 +14,24 @@ class MyApp extends StatelessWidget {
     final typeThisWidget = TypeThis(
       string: 'Hi there! How are you doing?',
       speed: 100,
-      style: const TextStyle(fontSize: 20),
+      style: const TextStyle(fontSize: 18),
     );
 
     return MaterialApp(
       title: 'Flutter TypeThis Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-      ),
+      theme: ThemeData(primarySwatch: Colors.deepPurple),
       home: Scaffold(
         appBar: AppBar(
           title: const Text('TypeThis Example'),
+          backgroundColor: Colors.grey[200],
         ),
         body: Center(
-          child: typeThisWidget,
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => typeThisWidget.controller.reset(),
-          child: const Icon(Icons.refresh),
+          child: CustomDecoratedBox(
+            typeThisWidget: typeThisWidget,
+            onResetPressed: () => typeThisWidget.controller.reset(),
+            onFreezePressed: () => typeThisWidget.controller.freeze(),
+            onUnfreezePressed: () => typeThisWidget.controller.unfreeze(),
+          ),
         ),
       ),
     );

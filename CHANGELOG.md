@@ -1,3 +1,9 @@
+## 0.2.0
+
+- feat: add freeze and unfreeze methods on controller to pause and resume animation
+- docs(README): update documentation on freeze and unfreeze method
+- docs(example): update example app with the freeze and unfreeze method showcases
+
 ## 0.1.1
 
 - chore(deps): bump to flutter version 3.16.0
