@@ -63,11 +63,11 @@ void main() {
             await widgetTester.pumpApp(buildSubject());
             await widgetTester.pump();
 
-            final finder = find.byType(Text);
+            final finder = find.byType(RichText);
             expect(finder, findsOneWidget);
 
-            final textWidget = widgetTester.firstWidget<Text>(finder);
-            expect(textWidget.data, equals(''));
+            final richTextWidget = widgetTester.firstWidget<RichText>(finder);
+            expect(richTextWidget.text.toPlainText(), equals(''));
           },
         );
 
@@ -78,11 +78,14 @@ void main() {
             await widgetTester
                 .pump(const Duration(milliseconds: testSpeed * 3));
 
-            final finder = find.byType(Text);
+            final finder = find.byType(RichText);
             expect(finder, findsOneWidget);
 
-            final textWidget = widgetTester.firstWidget<Text>(finder);
-            expect(textWidget.data, equals(testString.substring(0, 3)));
+            final richTextWidget = widgetTester.firstWidget<RichText>(finder);
+            expect(
+              richTextWidget.text.toPlainText(),
+              equals(testString.substring(0, 3)),
+            );
           },
         );
 
@@ -94,11 +97,11 @@ void main() {
               const Duration(milliseconds: testSpeed * testString.length),
             );
 
-            final finder = find.byType(Text);
+            final finder = find.byType(RichText);
             expect(finder, findsOneWidget);
 
-            final textWidget = widgetTester.firstWidget<Text>(finder);
-            expect(textWidget.data, equals(testString));
+            final richTextWidget = widgetTester.firstWidget<RichText>(finder);
+            expect(richTextWidget.text.toPlainText(), equals(testString));
           },
         );
       });
