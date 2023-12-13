@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CustomDecoratedBox extends StatelessWidget {
-  const CustomDecoratedBox({
+class SimpleDecoratedBox extends StatelessWidget {
+  const SimpleDecoratedBox({
     super.key,
     required this.typeThisWidget,
     required this.onResetPressed,

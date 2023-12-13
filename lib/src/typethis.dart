@@ -159,6 +159,12 @@ class TypeThis extends StatefulWidget {
   @visibleForTesting
   final TypeThisController typeThisController;
 
+  /// List of [TypeThisMatcher].
+  ///
+  /// The string will be matched with the provided [TypeThisMatcher]s' regex patterns.
+  /// And text style will be added to the matched strings.
+  final List<TypeThisMatcher> richTextMatchers;
+
   /// A controller for the [TypeThis] widget.
   ///
   /// It facilitates different operations on the typing animation.
@@ -204,6 +210,7 @@ class TypeThis extends StatefulWidget {
     this.textWidthBasis,
     this.textHeightBehavior,
     this.selectionColor,
+    this.richTextMatchers = const <TypeThisMatcher>[],
   })  : typeThisController = TypeThisController(
           Duration(milliseconds: speed),
           string.length,
@@ -222,6 +229,41 @@ class TypeThis extends StatefulWidget {
 }
 
 class _TypeThisState extends State<TypeThis> {
+  List<Map<String, TextStyle?>> richTextMappers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    final matchers = widget.richTextMatchers;
+
+    final patternsList = matchers.map((matcher) => matcher.regexPattern);
+    final pattern = patternsList.isNotEmpty ? patternsList.join('|') : '(?!.*)';
+
+    widget.string.splitMapJoin(
+      RegExp(pattern),
+      onMatch: (Match match) {
+        final matchData = match[0];
+        final matcherToConsider = matchers.firstWhere(
+          (matcher) => RegExp(matcher.regexPattern).hasMatch(matchData ?? ''),
+        );
+
+        if (matchData != null) {
+          richTextMappers.add(<String, TextStyle?>{
+            matchData: matcherToConsider.style ?? widget.style,
+          });
+        }
+
+        return '';
+      },
+      onNonMatch: (String nonMatch) {
+        richTextMappers.add(<String, TextStyle?>{
+          nonMatch: widget.style,
+        });
+        return '';
+      },
+    );
+  }
+
   @override
   void dispose() {
     widget.typeThisController.dispose();
@@ -242,8 +284,40 @@ class _TypeThisState extends State<TypeThis> {
         ListenableBuilder(
             listenable: widget.typeThisController,
             builder: (context, _) {
-              return Text(
-                widget.string.substring(0, widget.typeThisController.steps),
+              final subStrEndIndex = widget.typeThisController.steps;
+
+              List<TextSpan> widgets = <TextSpan>[];
+
+              for (int i = 0; i < richTextMappers.length; i++) {
+                final renderedTexts = widgets.map((w) => w.text);
+                final ongoingLength = renderedTexts.join('').length;
+
+                final currentEntry = richTextMappers[i].entries.first;
+                final currentKeyLength = currentEntry.key.length;
+
+                if (ongoingLength + currentKeyLength <= subStrEndIndex) {
+                  widgets.add(
+                    TextSpan(
+                      text: currentEntry.key,
+                      style: currentEntry.value,
+                    ),
+                  );
+                } else {
+                  final extraSpace = subStrEndIndex - ongoingLength;
+                  final currentEntry = richTextMappers[i].entries.first;
+
+                  widgets.add(
+                    TextSpan(
+                      text: currentEntry.key.substring(0, extraSpace),
+                      style: currentEntry.value,
+                    ),
+                  );
+                  break;
+                }
+              }
+
+              return Text.rich(
+                TextSpan(children: [...widgets]),
                 textAlign: widget.textAlign ?? defaultTextStyle.textAlign,
                 style: defaultTextStyle.style.merge(widget.style),
                 strutStyle: widget.strutStyle,

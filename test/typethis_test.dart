@@ -18,6 +18,7 @@ void main() {
       TextAlign textAlign = TextAlign.center,
       TextStyle style = const TextStyle(),
       double? textScaleFactor,
+      List<TypeThisMatcher> richTextMatchers = const [],
     }) {
       return TypeThis(
         string: string,
@@ -26,6 +27,7 @@ void main() {
         textAlign: textAlign,
         style: style,
         textScaleFactor: textScaleFactor,
+        richTextMatchers: richTextMatchers,
       );
     }
 
@@ -63,11 +65,11 @@ void main() {
             await widgetTester.pumpApp(buildSubject());
             await widgetTester.pump();
 
-            final finder = find.byType(Text);
+            final finder = find.byType(RichText);
             expect(finder, findsOneWidget);
 
-            final textWidget = widgetTester.firstWidget<Text>(finder);
-            expect(textWidget.data, equals(''));
+            final richTextWidget = widgetTester.firstWidget<RichText>(finder);
+            expect(richTextWidget.text.toPlainText(), equals(''));
           },
         );
 
@@ -78,11 +80,14 @@ void main() {
             await widgetTester
                 .pump(const Duration(milliseconds: testSpeed * 3));
 
-            final finder = find.byType(Text);
+            final finder = find.byType(RichText);
             expect(finder, findsOneWidget);
 
-            final textWidget = widgetTester.firstWidget<Text>(finder);
-            expect(textWidget.data, equals(testString.substring(0, 3)));
+            final richTextWidget = widgetTester.firstWidget<RichText>(finder);
+            expect(
+              richTextWidget.text.toPlainText(),
+              equals(testString.substring(0, 3)),
+            );
           },
         );
 
@@ -94,11 +99,79 @@ void main() {
               const Duration(milliseconds: testSpeed * testString.length),
             );
 
-            final finder = find.byType(Text);
+            final finder = find.byType(RichText);
             expect(finder, findsOneWidget);
 
-            final textWidget = widgetTester.firstWidget<Text>(finder);
-            expect(textWidget.data, equals(testString));
+            final richTextWidget = widgetTester.firstWidget<RichText>(finder);
+            expect(richTextWidget.text.toPlainText(), equals(testString));
+          },
+        );
+      });
+
+      group('rich text animation', () {
+        TypeThis buildRichTextSubject() {
+          return buildSubject(
+            richTextMatchers: const [
+              TypeThisMatcher(
+                'test',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          );
+        }
+
+        testWidgets(
+          'has started rendering and string is empty',
+          (widgetTester) async {
+            await widgetTester.pumpApp(buildRichTextSubject());
+            await widgetTester.pump();
+
+            final finder = find.byType(RichText);
+            expect(finder, findsOneWidget);
+
+            final richTextWidget = widgetTester.firstWidget<RichText>(finder);
+            expect(richTextWidget.text.toPlainText(), equals(''));
+          },
+        );
+
+        testWidgets(
+          'renders first 3 characters after (3 * testSpeed)ms duration',
+          (widgetTester) async {
+            await widgetTester.pumpApp(buildRichTextSubject());
+            await widgetTester
+                .pump(const Duration(milliseconds: testSpeed * 3));
+
+            final finder = find.byType(RichText);
+            expect(finder, findsOneWidget);
+
+            final richTextWidget = widgetTester.firstWidget<RichText>(finder);
+            expect(
+              richTextWidget.text.toPlainText(),
+              equals(testString.substring(0, 3)),
+            );
+
+            expect(
+              find.text(testString.substring(0, 3), findRichText: true),
+              findsOne,
+            );
+          },
+        );
+
+        testWidgets(
+          'has finished rendereing and whole string is present',
+          (widgetTester) async {
+            await widgetTester.pumpApp(buildRichTextSubject());
+            await widgetTester.pump(
+              const Duration(milliseconds: testSpeed * testString.length),
+            );
+
+            final finder = find.byType(RichText);
+            expect(finder, findsOneWidget);
+
+            final richTextWidget = widgetTester.firstWidget<RichText>(finder);
+            expect(richTextWidget.text.toPlainText(), equals(testString));
+
+            expect(find.text(testString, findRichText: true), findsOne);
           },
         );
       });
