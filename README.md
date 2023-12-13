@@ -41,6 +41,36 @@ typeThisWidget.controller.freeze();
 typeThisWidget.controller.unfreeze();
 ```
 
+## RichText effects
+
+Add rich text effects within typing animation using `TypeThisMatcher` that works with regex pattern.
+
+```dart
+final richTypeThisWidget = TypeThis(
+  string: 'Welcome to the typethis package.',
+  speed: 100,
+  style: const TextStyle(fontSize: 18),
+  softWrap: true,
+  richTextMatchers: const [
+    TypeThisMatcher(
+      'typethis',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontStyle: FontStyle.italic,
+        decoration: TextDecoration.underline,
+        decorationColor: Colors.indigo,
+        color: Colors.indigo,
+      ),
+    ),
+  ],
+);
+
+// Reset, freeze and unfreeze animation similarly
+richTypeThisWidget.controller.reset();
+richTypeThisWidget.controller.freeze();
+richTypeThisWidget.controller.unfreeze();
+```
+
 ## Demo
 
 [![Demo](demo/typethis.gif)](https://github.com/thecodexhub/typethis)
