@@ -1,3 +1,9 @@
+## 0.3.0
+
+- feat: add rich text effects using `TypeThisMatcher` that works with regex pattern
+- docs(README): update documentation on `TypeThisMatcher` example
+- docs(example): update example app with rich text effect typing animation
+
 ## 0.2.0
 
 - feat: add freeze and unfreeze methods on controller to pause and resume animation
