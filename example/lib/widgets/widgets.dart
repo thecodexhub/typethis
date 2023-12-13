@@ -1,1 +1,2 @@
-export 'custom_decorated_box.dart';
+export 'simple_decorated_box.dart';
+export 'rich_decorated_box.dart';
