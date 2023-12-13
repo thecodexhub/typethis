@@ -9,7 +9,7 @@ class TypeThisMatcher {
   final String regexPattern;
 
   /// Optional [TextStyle] for the matched string.
-  /// 
+  ///
   /// If `null`, default text style will be used.
   final TextStyle? style;
 

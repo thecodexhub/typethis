@@ -160,7 +160,7 @@ class TypeThis extends StatefulWidget {
   final TypeThisController typeThisController;
 
   /// List of [TypeThisMatcher].
-  /// 
+  ///
   /// The string will be matched with the provided [TypeThisMatcher]s' regex patterns.
   /// And text style will be added to the matched strings.
   final List<TypeThisMatcher> richTextMatchers;
