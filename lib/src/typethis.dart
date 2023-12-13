@@ -240,14 +240,11 @@ class _TypeThisState extends State<TypeThis> {
       RegExp(pattern),
       onMatch: (Match match) {
         final matchData = match[0];
-        final matcherToConsider = matchers.cast<TypeThisMatcher?>().firstWhere(
-          (matcher) {
-            return RegExp(matcher!.regexPattern).hasMatch(matchData ?? '');
-          },
-          orElse: () => null,
+        final matcherToConsider = matchers.firstWhere(
+          (matcher) => RegExp(matcher.regexPattern).hasMatch(matchData ?? ''),
         );
 
-        if (matcherToConsider != null && matchData != null) {
+        if (matchData != null) {
           richTextMappers.add(<String, TextStyle?>{
             matchData: matcherToConsider.style ?? widget.style,
           });
