@@ -14,6 +14,7 @@ void main() {
     TypeThis buildSubject({
       String string = testString,
       int speed = testSpeed,
+      TypeThisController? controller,
       bool showBlinkingCursor = false,
       TextAlign textAlign = TextAlign.center,
       TextStyle style = const TextStyle(),
@@ -23,6 +24,7 @@ void main() {
       return TypeThis(
         string: string,
         speed: speed,
+        controller: controller,
         showBlinkingCursor: showBlinkingCursor,
         textAlign: textAlign,
         style: style,
@@ -34,7 +36,7 @@ void main() {
     group(': constructor', () {
       test('works perfectly', () {
         expect(
-          () => TypeThis(string: testString),
+          () => const TypeThis(string: testString),
           returnsNormally,
         );
       });
@@ -49,12 +51,15 @@ void main() {
 
     group(': controller', () {
       test('works perfectly', () {
-        final typeThisWidget = buildSubject();
+        final controller = TypeThisController();
+        final typeThisWidget = buildSubject(controller: controller);
         expect(
-          typeThisWidget.typeThisController,
-          equals(typeThisWidget.controller),
+          typeThisWidget.controller,
+          equals(controller),
         );
       });
+
+      
     });
 
     group(': text widget', () {

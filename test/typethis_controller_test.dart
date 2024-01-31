@@ -3,108 +3,44 @@ import 'package:typethis/typethis.dart';
 
 void main() {
   group('TypeThisController', () {
-    test('initial values are set correctly', () {
-      final controller = TypeThisController(const Duration(seconds: 1), 10);
-      expect(controller.steps, 0);
+    late TypeThisController controller;
+    
+    setUpAll(() {
+      controller = TypeThisController();
     });
 
-    test('timer increments steps and notifies listeners', () async {
-      final controller = TypeThisController(
-        const Duration(milliseconds: 100),
-        5,
-      );
-      expect(controller.steps, 0);
-
-      await Future.delayed(const Duration(milliseconds: 350));
-      expect(controller.steps, 3);
+    test('initial state is start', () {
+      expect(controller.state, TypeThisControllerState.start);
     });
 
-    test('timer stops when steps reach maxBoundLength', () async {
-      final controller = TypeThisController(
-        const Duration(milliseconds: 100),
-        3,
-      );
-
-      await Future.delayed(const Duration(milliseconds: 400));
-      expect(controller.steps, 3);
-
-      expect(controller.timer?.isActive, false);
-    });
-
-    test('reset method resets the controller', () async {
-      final controller = TypeThisController(
-        const Duration(milliseconds: 100),
-        5,
-      );
-      final previousTimer = controller.timer;
-
-      await Future.delayed(const Duration(milliseconds: 300));
+    test('reset changes the state to start', () {
       controller.reset();
-
-      expect(controller.steps, 0);
-      expect(previousTimer?.isActive, false);
-      expect(controller.timer?.isActive, true);
+      expect(controller.state, TypeThisControllerState.start);
     });
 
-    test('multiple resets work correctly', () async {
-      final controller = TypeThisController(
-        const Duration(milliseconds: 100),
-        5,
-      );
-      final firstTimer = controller.timer;
-
-      await Future.delayed(const Duration(milliseconds: 300));
-      controller.reset();
-      final secondTimer = controller.timer;
-
-      await Future.delayed(const Duration(milliseconds: 200));
-      controller.reset();
-
-      expect(controller.steps, 0);
-
-      expect(firstTimer?.isActive, false);
-      expect(secondTimer?.isActive, false);
-      expect(controller.timer?.isActive, true);
-    });
-
-    test('freeze method freezes the controller', () async {
-      final controller = TypeThisController(
-        const Duration(milliseconds: 100),
-        5,
-      );
-      final previousTimer = controller.timer;
-
-      expect(previousTimer?.isActive, true);
-
-      await Future.delayed(const Duration(milliseconds: 350));
+    test('freeze changes the state to frozen', () {
       controller.freeze();
-
-      expect(controller.timer?.isActive, false);
-      expect(controller.steps, equals(3));
+      expect(controller.state, TypeThisControllerState.frozen);
     });
 
-    test(
-      'unfreeze method resumes the controller from freezing point',
-      () async {
-        final controller = TypeThisController(
-          const Duration(milliseconds: 100),
-          7,
-        );
-        final previousTimer = controller.timer;
+    test('unfreeze changes the state to resumed', () {
+      controller.unfreeze();
+      expect(controller.state, TypeThisControllerState.resumed);
+    });
 
-        expect(previousTimer?.isActive, true);
+    test('unfreeze after freeze changes the state to resumed', () {
+      controller.freeze();
+      controller.unfreeze();
+      expect(controller.state, TypeThisControllerState.resumed);
+    });
 
-        await Future.delayed(const Duration(milliseconds: 350));
-        controller.freeze();
-
-        expect(controller.steps, equals(3));
-
-        controller.unfreeze();
-        await Future.delayed(const Duration(milliseconds: 250));
-
-        expect(controller.timer?.isActive, true);
-        expect(controller.steps, equals(5));
-      },
-    );
+    test('adding listener triggers notifyListeners', () {
+      bool listenerCalled = false;
+      controller.addListener(() {
+        listenerCalled = true;
+      });
+      controller.notifyListeners();
+      expect(listenerCalled, true);
+    });
   });
 }
