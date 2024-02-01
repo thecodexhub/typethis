@@ -150,7 +150,18 @@ class TypeThis extends StatefulWidget {
   /// (semi-transparent grey).
   final Color? selectionColor;
 
+  /// A controller for a [TypeThis] widget.
+  /// 
+  /// Exposes three main methods for controlling the typing animation.
+  /// 
+  /// `reset` method resets the typing animation and restarts it from beginning.
+  /// 
+  /// `freeze` method freezes or pauses the typing animation.
+  /// 
+  /// `unfreeze` method resumes the typing anmation from where it was frozen last time.
   ///
+  /// Remember to [dispose] of the [TypeThisController] when it is no longer
+  /// needed. This will ensure we discard any resources used by the object.
   final TypeThisController? controller;
 
   /// List of [TypeThisMatcher].
