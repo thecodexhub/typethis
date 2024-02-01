@@ -4,7 +4,7 @@ import 'package:typethis/typethis.dart';
 void main() {
   group('TypeThisController', () {
     late TypeThisController controller;
-    
+
     setUpAll(() {
       controller = TypeThisController();
     });

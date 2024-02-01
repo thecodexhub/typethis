@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 /// Controller for managing or controlling the state of the typing animation.
 class TypeThisController extends ChangeNotifier {
   TypeThisControllerState _state = TypeThisControllerState.start;
+
   /// The current state of the typing animation.
   TypeThisControllerState get state => _state;
 
