@@ -1,3 +1,24 @@
+## 1.0.0
+
+- BREAKING: revamp controller structure for `TypeThisController`
+- docs(README): update documentation to encorporate the controller design change
+- docs(example): update example app with new controller structure
+
+### Changes
+
+This is how the controller looks and works now. More details in [README](./README.md#control-the-animation). 
+
+```dart
+final controller = TypeThisController();
+
+TypeThis(
+  string: 'Example String',
+  controller: controller,
+);
+
+controller.reset();
+```
+
 ## 0.3.0
 
 - feat: add rich text effects using `TypeThisMatcher` that works with regex pattern
