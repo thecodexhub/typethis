@@ -1,7 +1,7 @@
 ## 1.0.0
 
 - BREAKING: revamp controller structure for `TypeThisController`
-- docs(README): update documentation to encorporate the controller design change
+- docs(README): update documentation to incorporate the controller design change
 - docs(example): update example app with new controller structure
 
 ### Changes
