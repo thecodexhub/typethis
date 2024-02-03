@@ -14,6 +14,7 @@ void main() {
     TypeThis buildSubject({
       String string = testString,
       int speed = testSpeed,
+      TypeThisController? controller,
       bool showBlinkingCursor = false,
       TextAlign textAlign = TextAlign.center,
       TextStyle style = const TextStyle(),
@@ -23,6 +24,7 @@ void main() {
       return TypeThis(
         string: string,
         speed: speed,
+        controller: controller,
         showBlinkingCursor: showBlinkingCursor,
         textAlign: textAlign,
         style: style,
@@ -34,7 +36,7 @@ void main() {
     group(': constructor', () {
       test('works perfectly', () {
         expect(
-          () => TypeThis(string: testString),
+          () => const TypeThis(string: testString),
           returnsNormally,
         );
       });
@@ -49,12 +51,82 @@ void main() {
 
     group(': controller', () {
       test('works perfectly', () {
-        final typeThisWidget = buildSubject();
+        final controller = TypeThisController();
+        final typeThisWidget = buildSubject(controller: controller);
         expect(
-          typeThisWidget.typeThisController,
-          equals(typeThisWidget.controller),
+          typeThisWidget.controller,
+          equals(controller),
         );
       });
+
+      testWidgets(
+        'reset method resets and renders from beginning',
+        (widgetTester) async {
+          final controller = TypeThisController();
+
+          await widgetTester.pumpApp(buildSubject(controller: controller));
+          await widgetTester.pump(const Duration(milliseconds: 200));
+
+          controller.reset();
+          await widgetTester.pump(const Duration(milliseconds: 2 * testSpeed));
+
+          final finder = find.byType(RichText);
+          expect(finder, findsOneWidget);
+
+          final richTextWidget = widgetTester.firstWidget<RichText>(finder);
+          expect(
+            richTextWidget.text.toPlainText(),
+            equals(testString.substring(0, 2)),
+          );
+        },
+      );
+
+      testWidgets(
+        'freeze method freezes the typing animation',
+        (widgetTester) async {
+          final controller = TypeThisController();
+
+          await widgetTester.pumpApp(buildSubject(controller: controller));
+          await widgetTester.pump(const Duration(milliseconds: 5 * testSpeed));
+
+          controller.freeze();
+          await widgetTester.pump(const Duration(milliseconds: 2 * testSpeed));
+
+          final finder = find.byType(RichText);
+          expect(finder, findsOneWidget);
+
+          final richTextWidget = widgetTester.firstWidget<RichText>(finder);
+          expect(
+            richTextWidget.text.toPlainText(),
+            equals(testString.substring(0, 5)),
+          );
+        },
+      );
+
+      testWidgets(
+        'unfreeze method resumes the typing animation',
+        (widgetTester) async {
+          final controller = TypeThisController();
+
+          await widgetTester.pumpApp(buildSubject(controller: controller));
+          await widgetTester.pump(const Duration(milliseconds: 5 * testSpeed));
+
+          controller.freeze();
+          await widgetTester.pump(const Duration(milliseconds: 2 * testSpeed));
+
+          controller.unfreeze();
+          await widgetTester.pump(const Duration(milliseconds: 2 * testSpeed));
+
+          final finder = find.byType(RichText);
+          expect(finder, findsOneWidget);
+
+          final richTextWidget = widgetTester.firstWidget<RichText>(finder);
+          expect(
+            richTextWidget.text.toPlainText(),
+            equals(testString.substring(0, 7)),
+          );
+        },
+      );
     });
 
     group(': text widget', () {

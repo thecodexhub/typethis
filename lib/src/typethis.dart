@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/widgets.dart';
@@ -149,15 +150,19 @@ class TypeThis extends StatefulWidget {
   /// (semi-transparent grey).
   final Color? selectionColor;
 
-  /// A [TypeThisController] that listens to steps attached
-  /// with a timer. Listens to the [ChangeNotifier], and helps rebuild
-  /// the widget after each `notifyListeners()`.
+  /// A controller for a [TypeThis] widget.
   ///
-  /// This variable is public for testing.
+  /// Exposes three main methods for controlling the typing animation.
   ///
-  /// DO NOT use this variable. Instead, use the `controller` getter.
-  @visibleForTesting
-  final TypeThisController typeThisController;
+  /// `reset` method resets the typing animation and restarts it from beginning.
+  ///
+  /// `freeze` method freezes or pauses the typing animation.
+  ///
+  /// `unfreeze` method resumes the typing anmation from where it was frozen last time.
+  ///
+  /// Remember to [dispose] of the [TypeThisController] when it is no longer
+  /// needed. This will ensure we discard any resources used by the object.
+  final TypeThisController? controller;
 
   /// List of [TypeThisMatcher].
   ///
@@ -165,31 +170,13 @@ class TypeThis extends StatefulWidget {
   /// And text style will be added to the matched strings.
   final List<TypeThisMatcher> richTextMatchers;
 
-  /// A controller for the [TypeThis] widget.
-  ///
-  /// It facilitates different operations on the typing animation.
-  /// For example, the `reset()` method resets the typing animation,
-  /// and restarts it from the beginning.
-  ///
-  /// ```dart
-  /// // Extract the [TypeThis] widget into a separate variable.
-  /// final typeThisWidget = TypeThis(
-  ///   string: 'Hi there! How are you doing?',
-  ///   speed: 50,
-  ///   style: TextStyle(fontSize: 18, color: Colors.black),
-  /// );
-  ///
-  /// // Resets the animation
-  /// typeThisWidget.controller.reset();
-  /// ```
-  TypeThisController get controller => typeThisController;
-
   /// {@macro typethis}
-  TypeThis({
+  const TypeThis({
     super.key,
     required this.string,
     this.speed = 50,
     this.showBlinkingCursor = true,
+    this.controller,
     this.cursorText,
     this.textAlign,
     this.style,
@@ -211,11 +198,7 @@ class TypeThis extends StatefulWidget {
     this.textHeightBehavior,
     this.selectionColor,
     this.richTextMatchers = const <TypeThisMatcher>[],
-  })  : typeThisController = TypeThisController(
-          Duration(milliseconds: speed),
-          string.length,
-        ),
-        assert(
+  })  : assert(
           speed >= 0,
           'spped must either be 0 or greater than 0',
         ),
@@ -230,6 +213,9 @@ class TypeThis extends StatefulWidget {
 
 class _TypeThisState extends State<TypeThis> {
   List<Map<String, TextStyle?>> richTextMappers = [];
+  int currentStep = 0;
+
+  late Timer timer;
 
   @override
   void initState() {
@@ -262,12 +248,42 @@ class _TypeThisState extends State<TypeThis> {
         return '';
       },
     );
+
+    _startTimerAndUpdateState();
+    widget.controller?.addListener(_handleControllerChange);
   }
 
   @override
   void dispose() {
-    widget.typeThisController.dispose();
+    timer.cancel();
     super.dispose();
+  }
+
+  void _handleControllerChange() {
+    if (widget.controller?.state == TypeThisControllerState.start) {
+      timer.cancel();
+      currentStep = 0;
+      _startTimerAndUpdateState();
+    } else if (widget.controller?.state == TypeThisControllerState.frozen) {
+      timer.cancel();
+    } else if (widget.controller?.state == TypeThisControllerState.resumed) {
+      timer.cancel();
+      if (currentStep != widget.string.length) {
+        _startTimerAndUpdateState();
+      }
+    }
+  }
+
+  void _startTimerAndUpdateState() {
+    timer = Timer.periodic(Duration(milliseconds: widget.speed), (_) {
+      currentStep++;
+      if (currentStep == widget.string.length) {
+        timer.cancel();
+      }
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -278,61 +294,57 @@ class _TypeThisState extends State<TypeThis> {
     final textScaler = widget.textScaler ??
         (textScaleFactor != null ? TextScaler.linear(textScaleFactor) : null);
 
+    final subStrEndIndex = currentStep;
+
+    List<TextSpan> widgets = <TextSpan>[];
+
+    for (int i = 0; i < richTextMappers.length; i++) {
+      final renderedTexts = widgets.map((w) => w.text);
+      final ongoingLength = renderedTexts.join('').length;
+
+      final currentEntry = richTextMappers[i].entries.first;
+      final currentKeyLength = currentEntry.key.length;
+
+      if (ongoingLength + currentKeyLength <= subStrEndIndex) {
+        widgets.add(
+          TextSpan(
+            text: currentEntry.key,
+            style: currentEntry.value,
+          ),
+        );
+      } else {
+        final extraSpace = subStrEndIndex - ongoingLength;
+        final currentEntry = richTextMappers[i].entries.first;
+
+        widgets.add(
+          TextSpan(
+            text: currentEntry.key.substring(0, extraSpace),
+            style: currentEntry.value,
+          ),
+        );
+        break;
+      }
+    }
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ListenableBuilder(
-            listenable: widget.typeThisController,
-            builder: (context, _) {
-              final subStrEndIndex = widget.typeThisController.steps;
-
-              List<TextSpan> widgets = <TextSpan>[];
-
-              for (int i = 0; i < richTextMappers.length; i++) {
-                final renderedTexts = widgets.map((w) => w.text);
-                final ongoingLength = renderedTexts.join('').length;
-
-                final currentEntry = richTextMappers[i].entries.first;
-                final currentKeyLength = currentEntry.key.length;
-
-                if (ongoingLength + currentKeyLength <= subStrEndIndex) {
-                  widgets.add(
-                    TextSpan(
-                      text: currentEntry.key,
-                      style: currentEntry.value,
-                    ),
-                  );
-                } else {
-                  final extraSpace = subStrEndIndex - ongoingLength;
-                  final currentEntry = richTextMappers[i].entries.first;
-
-                  widgets.add(
-                    TextSpan(
-                      text: currentEntry.key.substring(0, extraSpace),
-                      style: currentEntry.value,
-                    ),
-                  );
-                  break;
-                }
-              }
-
-              return Text.rich(
-                TextSpan(children: [...widgets]),
-                textAlign: widget.textAlign ?? defaultTextStyle.textAlign,
-                style: defaultTextStyle.style.merge(widget.style),
-                strutStyle: widget.strutStyle,
-                textDirection: widget.textDirection,
-                locale: widget.locale,
-                softWrap: widget.softWrap ?? defaultTextStyle.softWrap,
-                overflow: widget.overflow,
-                textScaler: textScaler,
-                maxLines: widget.maxLines,
-                semanticsLabel: widget.semanticsLabel,
-                textWidthBasis: widget.textWidthBasis,
-                textHeightBehavior: widget.textHeightBehavior,
-                selectionColor: widget.selectionColor,
-              );
-            }),
+        Text.rich(
+          TextSpan(children: [...widgets]),
+          textAlign: widget.textAlign ?? defaultTextStyle.textAlign,
+          style: defaultTextStyle.style.merge(widget.style),
+          strutStyle: widget.strutStyle,
+          textDirection: widget.textDirection,
+          locale: widget.locale,
+          softWrap: widget.softWrap ?? defaultTextStyle.softWrap,
+          overflow: widget.overflow,
+          textScaler: textScaler,
+          maxLines: widget.maxLines,
+          semanticsLabel: widget.semanticsLabel,
+          textWidthBasis: widget.textWidthBasis,
+          textHeightBehavior: widget.textHeightBehavior,
+          selectionColor: widget.selectionColor,
+        ),
         widget.showBlinkingCursor
             ? BlinkingCursor(cursorText: widget.cursorText)
             : const SizedBox.shrink(),

@@ -5,71 +5,109 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 [![Package Version](https://img.shields.io/pub/v/typethis.svg)](https://pub.dev/packages/typethis)
 
-A flutter package that aims to simplify versatile typing animation with reset, freeze and unfreeze functionality.
+A flutter package that aims to simplify versatile typing animation with rich text effects and other operations (reset, freeze, unfreeze).
 
-## Create a TypeThis widget
+## Create and style TypeThis widget
+
+The `TypeThis` widget requires only one essential parameter: `string`. This parameter represents the text that will undergo animation.
+
+Additionally, you can customize the animation speed using the optional `speed` parameter, with a default value of 50 milliseconds. This implies that each character in the provided text will be rendered at intervals of 50 milliseconds, creating a dynamic and engaging typing effect.
+
+Here is an example:
 
 ```dart
-final typeThisWidget = TypeThis(
-  // The text which will be animated.
-  string: 'Hi there! How are you doing?',
-  // Speed in milliseconds at which the typing animation will be executed.
-  speed: 100,
-  // Text style for the string.
-  style: const TextStyle(fontSize: 20),
+TypeThis(
+  string: 'An example string with typing animation.',
+  speed: 150,
 );
 ```
 
-## Reset the animation
+The `TypeThis` widget gives users the complete control over text rendering, offering all the parameters available in the standard `Text` widget.
 
 ```dart
-// Call the `reset()` method on controller to reset the typing animation.
-typeThisWidget.controller.reset();
+TypeThis(
+  string: 'An example string with typing animation.',
+  speed: 150,
+  style: TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+    color: Colors.indigo,
+  ),
+  textAlign: TextAlign.center,
+);
 ```
 
-## Freeze (pause) the animation
+## Control the animation
+
+To control the typing animation, create a `TypeThisController` and supply it to the `TypeThis` widget.
+
+> 📘 **Important**
+> 
+> Call `dispose` of the `TypeThisController` when you’ve finished using it. This ensures that you discard any resources used by the object.
 
 ```dart
-// Call the `freeze()` method on controller to freeze/pause the typing animation.
-typeThisWidget.controller.freeze();
+// Define a custom widget.
+class MyTypingWidget extends StatefulWidget { ... }
+
+class _MyTypingWidgetState extends State<MyTypingWidget> {
+  // Create a typethis controller.
+  final myController = TypeThisController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
+  }
+}
 ```
 
-## Unfreeze (resume) the animation
+Now that you have a `TypeThisController`, wire it up to a text field using the controller property.
 
 ```dart
-// Call the `unfreeze()` method on controller to unfreeze/resume the typing animation.
-typeThisWidget.controller.unfreeze();
+TypeThis(
+  string: 'An example string with typing animation.',
+  controller: myController,
+);
 ```
 
-## RichText effects
+After supplying the `TypeThisController`, begin controlling the typing animatiomn. Use the reset() method provided by the TypeThisController to resets the typing animation and restart it from the beginning.
+
+Similarly, use the freeze() and unfreeze() methods to pause/freeze and resume/unfreeze the animation respectively.
+
+```dart
+// Reset
+myController.reset();
+
+// Freeze / Pause
+myController.freeze();
+
+// Unfreeze / Resume
+myController.unfreeze();
+```
+
+## Bring in RichText effects
+
+One standout feature of this package is the ability to incorporate rich text styling within the typing animation.
 
 Add rich text effects within typing animation using `TypeThisMatcher` that works with regex pattern.
 
 ```dart
-final richTypeThisWidget = TypeThis(
+TypeThis(
   string: 'Welcome to the typethis package.',
-  speed: 100,
-  style: const TextStyle(fontSize: 18),
-  softWrap: true,
   richTextMatchers: const [
     TypeThisMatcher(
       'typethis',
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontStyle: FontStyle.italic,
-        decoration: TextDecoration.underline,
-        decorationColor: Colors.indigo,
-        color: Colors.indigo,
       ),
     ),
   ],
 );
-
-// Reset, freeze and unfreeze animation similarly
-richTypeThisWidget.controller.reset();
-richTypeThisWidget.controller.freeze();
-richTypeThisWidget.controller.unfreeze();
 ```
+
+Use the TypeThisController to manage and control the animations as well. [Read here](#control-the-animation).
 
 ## Demo
 
