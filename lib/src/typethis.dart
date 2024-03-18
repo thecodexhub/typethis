@@ -329,21 +329,23 @@ class _TypeThisState extends State<TypeThis> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text.rich(
-          TextSpan(children: [...widgets]),
-          textAlign: widget.textAlign ?? defaultTextStyle.textAlign,
-          style: defaultTextStyle.style.merge(widget.style),
-          strutStyle: widget.strutStyle,
-          textDirection: widget.textDirection,
-          locale: widget.locale,
-          softWrap: widget.softWrap ?? defaultTextStyle.softWrap,
-          overflow: widget.overflow,
-          textScaler: textScaler,
-          maxLines: widget.maxLines,
-          semanticsLabel: widget.semanticsLabel,
-          textWidthBasis: widget.textWidthBasis,
-          textHeightBehavior: widget.textHeightBehavior,
-          selectionColor: widget.selectionColor,
+        Flexible(
+          child: Text.rich(
+            TextSpan(children: [...widgets]),
+            textAlign: widget.textAlign ?? defaultTextStyle.textAlign,
+            style: defaultTextStyle.style.merge(widget.style),
+            strutStyle: widget.strutStyle,
+            textDirection: widget.textDirection,
+            locale: widget.locale,
+            softWrap: widget.softWrap ?? defaultTextStyle.softWrap,
+            overflow: widget.overflow,
+            textScaler: textScaler,
+            maxLines: widget.maxLines,
+            semanticsLabel: widget.semanticsLabel,
+            textWidthBasis: widget.textWidthBasis,
+            textHeightBehavior: widget.textHeightBehavior,
+            selectionColor: widget.selectionColor,
+          ),
         ),
         widget.showBlinkingCursor
             ? BlinkingCursor(cursorText: widget.cursorText)
