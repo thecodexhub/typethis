@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 
 /// Controller for managing or controlling the state of the typing animation.
 class TypeThisController extends ChangeNotifier {
+  bool _isDisposed = false;
+
   TypeThisControllerState _state = TypeThisControllerState.start;
 
   /// The current state of the typing animation.
@@ -9,12 +11,20 @@ class TypeThisController extends ChangeNotifier {
 
   /// Resets the typing animation and restarts it from beginning.
   void reset() {
+    if (_isDisposed) {
+      return;
+    }
+
     _state = TypeThisControllerState.start;
     notifyListeners();
   }
 
   /// Freezes the typing animation.
   void freeze() {
+    if (_isDisposed) {
+      return;
+    }
+
     _state = TypeThisControllerState.frozen;
     notifyListeners();
   }
@@ -22,8 +32,18 @@ class TypeThisController extends ChangeNotifier {
   /// Unfreezes or resumes the typing animation, means the animation resumes
   /// from where it was frozen last time.
   void unfreeze() {
+    if (_isDisposed) {
+      return;
+    }
+
     _state = TypeThisControllerState.resumed;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _isDisposed = true;
   }
 }
 
