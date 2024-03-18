@@ -27,6 +27,15 @@ class TypeThis extends StatefulWidget {
   /// at a difference of 50 milliseconds.
   final int speed;
 
+  /// To fill the needed space right from the start of the animation and avoid avoid
+  /// shifting of surrounding elements during animation
+  ///
+  /// You should avoid using this feature a lot, as it requires more resources
+  /// due to the Stack widget
+  ///
+  /// Default is set to `false`.
+  final bool fillSpaceFromStart;
+
   /// Whether to show blinking cursor.
   ///
   /// Default is set to `true`.
@@ -176,6 +185,7 @@ class TypeThis extends StatefulWidget {
     required this.string,
     this.speed = 50,
     this.showBlinkingCursor = true,
+    this.fillSpaceFromStart = false,
     this.controller,
     this.cursorText,
     this.textAlign,
@@ -326,29 +336,57 @@ class _TypeThisState extends State<TypeThis> {
       }
     }
 
-    return Row(
+    final richTextAnimatedWidget = Text.rich(
+      TextSpan(children: [...widgets]),
+      textAlign: widget.textAlign ?? defaultTextStyle.textAlign,
+      style: defaultTextStyle.style.merge(widget.style),
+      strutStyle: widget.strutStyle,
+      textDirection: widget.textDirection,
+      locale: widget.locale,
+      softWrap: widget.softWrap ?? defaultTextStyle.softWrap,
+      overflow: widget.overflow,
+      textScaler: textScaler,
+      maxLines: widget.maxLines,
+      semanticsLabel: widget.semanticsLabel,
+      textWidthBasis: widget.textWidthBasis,
+      textHeightBehavior: widget.textHeightBehavior,
+      selectionColor: widget.selectionColor,
+    );
+
+    final richTextWidget = Text.rich(
+      TextSpan(text: widget.string),
+      textAlign: widget.textAlign ?? defaultTextStyle.textAlign,
+      style: defaultTextStyle.style.merge(widget.style),
+      strutStyle: widget.strutStyle,
+      textDirection: widget.textDirection,
+      locale: widget.locale,
+      softWrap: widget.softWrap ?? defaultTextStyle.softWrap,
+      overflow: widget.overflow,
+      textScaler: textScaler,
+      maxLines: widget.maxLines,
+      semanticsLabel: widget.semanticsLabel,
+      textWidthBasis: widget.textWidthBasis,
+      textHeightBehavior: widget.textHeightBehavior,
+      selectionColor: widget.selectionColor,
+    );
+
+    final textAndCursorRow = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text.rich(
-          TextSpan(children: [...widgets]),
-          textAlign: widget.textAlign ?? defaultTextStyle.textAlign,
-          style: defaultTextStyle.style.merge(widget.style),
-          strutStyle: widget.strutStyle,
-          textDirection: widget.textDirection,
-          locale: widget.locale,
-          softWrap: widget.softWrap ?? defaultTextStyle.softWrap,
-          overflow: widget.overflow,
-          textScaler: textScaler,
-          maxLines: widget.maxLines,
-          semanticsLabel: widget.semanticsLabel,
-          textWidthBasis: widget.textWidthBasis,
-          textHeightBehavior: widget.textHeightBehavior,
-          selectionColor: widget.selectionColor,
-        ),
+        richTextAnimatedWidget,
         widget.showBlinkingCursor
             ? BlinkingCursor(cursorText: widget.cursorText)
             : const SizedBox.shrink(),
       ],
     );
+
+    return widget.fillSpaceFromStart
+        ? Stack(
+            children: [
+              Opacity(opacity: 0, child: richTextWidget),
+              textAndCursorRow
+            ],
+          )
+        : textAndCursorRow;
   }
 }
