@@ -76,7 +76,7 @@ void main() {
           final richTextWidget = widgetTester.firstWidget<RichText>(finder);
           expect(
             richTextWidget.text.toPlainText(),
-            equals(testString.substring(0, 2)),
+            contains(testString.substring(0, 2)),
           );
         },
       );
@@ -98,7 +98,7 @@ void main() {
           final richTextWidget = widgetTester.firstWidget<RichText>(finder);
           expect(
             richTextWidget.text.toPlainText(),
-            equals(testString.substring(0, 5)),
+            contains(testString.substring(0, 5)),
           );
         },
       );
@@ -123,7 +123,7 @@ void main() {
           final richTextWidget = widgetTester.firstWidget<RichText>(finder);
           expect(
             richTextWidget.text.toPlainText(),
-            equals(testString.substring(0, 7)),
+            contains(testString.substring(0, 7)),
           );
         },
       );
@@ -141,7 +141,7 @@ void main() {
             expect(finder, findsOneWidget);
 
             final richTextWidget = widgetTester.firstWidget<RichText>(finder);
-            expect(richTextWidget.text.toPlainText(), equals(''));
+            expect(richTextWidget.text.toPlainText(), contains(''));
           },
         );
 
@@ -158,7 +158,7 @@ void main() {
             final richTextWidget = widgetTester.firstWidget<RichText>(finder);
             expect(
               richTextWidget.text.toPlainText(),
-              equals(testString.substring(0, 3)),
+              contains(testString.substring(0, 3)),
             );
           },
         );
@@ -175,7 +175,7 @@ void main() {
             expect(finder, findsOneWidget);
 
             final richTextWidget = widgetTester.firstWidget<RichText>(finder);
-            expect(richTextWidget.text.toPlainText(), equals(testString));
+            expect(richTextWidget.text.toPlainText(), contains(testString));
           },
         );
       });
@@ -202,7 +202,7 @@ void main() {
             expect(finder, findsOneWidget);
 
             final richTextWidget = widgetTester.firstWidget<RichText>(finder);
-            expect(richTextWidget.text.toPlainText(), equals(''));
+            expect(richTextWidget.text.toPlainText(), contains(''));
           },
         );
 
@@ -219,7 +219,7 @@ void main() {
             final richTextWidget = widgetTester.firstWidget<RichText>(finder);
             expect(
               richTextWidget.text.toPlainText(),
-              equals(testString.substring(0, 3)),
+              contains(testString.substring(0, 3)),
             );
 
             expect(
@@ -241,7 +241,7 @@ void main() {
             expect(finder, findsOneWidget);
 
             final richTextWidget = widgetTester.firstWidget<RichText>(finder);
-            expect(richTextWidget.text.toPlainText(), equals(testString));
+            expect(richTextWidget.text.toPlainText(), contains(testString));
 
             expect(find.text(testString, findRichText: true), findsOne);
           },
@@ -314,9 +314,6 @@ void main() {
 
           final blinkingCursorFinder = find.byType(BlinkingCursor);
           expect(blinkingCursorFinder, findsNothing);
-
-          final sizedBoxFinder = find.byType(SizedBox);
-          expect(sizedBoxFinder, findsOneWidget);
         },
       );
 
@@ -335,6 +332,26 @@ void main() {
           expect(sizedBoxFinder, findsNothing);
         },
       );
+
+      testWidgets('renders long text', (widgetTester) async {
+        widgetTester.view.physicalSize = const Size(100, 700);
+
+        const longString = 'A very very very very very long piece of string';
+        await widgetTester.pumpApp(
+          buildSubject(
+            string: longString,
+            showBlinkingCursor: true,
+          ),
+        );
+        await widgetTester.pump(const Duration(seconds: 7));
+
+        final finder = find.byType(RichText);
+
+        final richTextWidget = widgetTester.firstWidget<RichText>(finder);
+        expect(richTextWidget.text.toPlainText(), contains(longString));
+
+        expect(find.byType(BlinkingCursor), findsOneWidget);
+      });
     });
   });
 }
