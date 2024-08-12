@@ -71,7 +71,7 @@ TypeThis(
 );
 ```
 
-After supplying the `TypeThisController`, begin controlling the typing animatiomn. Use the reset() method provided by the TypeThisController to resets the typing animation and restart it from the beginning.
+After supplying the `TypeThisController`, begin controlling the typing animation. Use the reset() method provided by the TypeThisController to resets the typing animation and restart it from the beginning.
 
 Similarly, use the freeze() and unfreeze() methods to pause/freeze and resume/unfreeze the animation respectively.
 
