@@ -1,3 +1,7 @@
+## 1.0.1
+
+- fix: text overflow on long string ([#10](https://github.com/thecodexhub/typethis/pull/10))
+
 ## 1.0.0
 
 - BREAKING: revamp controller structure for `TypeThisController`
