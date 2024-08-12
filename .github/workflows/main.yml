@@ -1,5 +1,9 @@
 name: build
 
+concurrency:
+  group: $-$
+  cancel-in-progress: true
+
 on:
   pull_request:
     branches:
@@ -9,6 +13,19 @@ on:
       - main
 
 jobs:
+  semantic-pull-request:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
+
+  spell-check:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
+    with:
+      includes: |
+        **/*.md
+      modified_files_only: false
+  
+  pana_score:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/pana.yml@v1
+
   build:
     runs-on: ubuntu-latest
 
@@ -20,7 +37,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-      
+
       - name: 🚧 Install Dependencies
         run: flutter pub get
 
