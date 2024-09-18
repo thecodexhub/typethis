@@ -5,6 +5,10 @@ labels: [feature]
 assignees:
   - thecodexhub
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request report!
   - type: textarea
     id: description
     attributes:
