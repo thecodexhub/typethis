@@ -1,3 +1,9 @@
+## 1.0.2
+
+- fix: use characters api to render unicode ([#15](https://github.com/thecodexhub/typethis/pull/15))
+- chore: create CODE_OF_CONDUCT.md
+- chore: update issue templates
+
 ## 1.0.1
 
 - fix: text overflow on long string ([#10](https://github.com/thecodexhub/typethis/pull/10))
