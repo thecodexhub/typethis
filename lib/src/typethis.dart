@@ -55,7 +55,7 @@ class TypeThis extends StatefulWidget {
   /// [TextAlign.end] are interpreted.
   ///
   /// This is also used to disambiguate how to render bidirectional text. For
-  /// example, if the [data] is an English phrase followed by a Hebrew phrase,
+  /// example, if the [string] is an English phrase followed by a Hebrew phrase,
   /// in a [TextDirection.ltr] context the English phrase will be on the left
   /// and the Hebrew phrase to its right, while in a [TextDirection.rtl]
   /// context, the English phrase will be on the right and the Hebrew phrase on
@@ -160,7 +160,7 @@ class TypeThis extends StatefulWidget {
   ///
   /// `unfreeze` method resumes the typing anmation from where it was frozen last time.
   ///
-  /// Remember to [dispose] of the [TypeThisController] when it is no longer
+  /// Remember to dispose of the [TypeThisController] when it is no longer
   /// needed. This will ensure we discard any resources used by the object.
   final TypeThisController? controller;
 
