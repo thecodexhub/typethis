@@ -268,7 +268,7 @@ class _TypeThisState extends State<TypeThis> {
       timer.cancel();
     } else if (widget.controller?.state == TypeThisControllerState.resumed) {
       timer.cancel();
-      if (currentStep != widget.string.length) {
+      if (currentStep != widget.string.characters.length) {
         _startTimerAndUpdateState();
       }
     }
@@ -277,7 +277,7 @@ class _TypeThisState extends State<TypeThis> {
   void _startTimerAndUpdateState() {
     timer = Timer.periodic(Duration(milliseconds: widget.speed), (_) {
       currentStep++;
-      if (currentStep == widget.string.length) {
+      if (currentStep == widget.string.characters.length) {
         timer.cancel();
       }
       if (mounted) {
@@ -300,10 +300,10 @@ class _TypeThisState extends State<TypeThis> {
 
     for (int i = 0; i < richTextMappers.length; i++) {
       final renderedTexts = widgets.map((w) => w.text);
-      final ongoingLength = renderedTexts.join('').length;
+      final ongoingLength = renderedTexts.join('').characters.length;
 
       final currentEntry = richTextMappers[i].entries.first;
-      final currentKeyLength = currentEntry.key.length;
+      final currentKeyLength = currentEntry.key.characters.length;
 
       if (ongoingLength + currentKeyLength <= subStrEndIndex) {
         widgets.add(
@@ -318,7 +318,7 @@ class _TypeThisState extends State<TypeThis> {
 
         widgets.add(
           TextSpan(
-            text: currentEntry.key.substring(0, extraSpace),
+            text: currentEntry.key.characters.take(extraSpace).toString(),
             style: currentEntry.value,
           ),
         );
