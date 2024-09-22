@@ -1,4 +1,3 @@
-// import 'package:example/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:typethis/typethis.dart';
 
@@ -37,7 +36,7 @@ class _MyAppState extends State<MyApp> {
           onFreezePressed: () => controller.freeze(),
           onUnfreezePressed: () => controller.unfreeze(),
           child: TypeThis(
-            string: 'An example string with typing animation.',
+            string: 'An example string 💥 with typing 😎 animation. 🚀',
             controller: controller,
             speed: 100,
             style: const TextStyle(fontSize: 16),

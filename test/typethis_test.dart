@@ -353,5 +353,37 @@ void main() {
         expect(find.byType(BlinkingCursor), findsOneWidget);
       });
     });
+
+    testWidgets('works with unicode characters (emoji)', (widgetTester) async {
+      const text = '🚀 string 😃 with 👨‍💻✨ emoji 👀';
+      await widgetTester.pumpApp(
+        buildSubject(
+          string: text,
+        ),
+      );
+      await widgetTester.pump(const Duration(milliseconds: 55));
+
+      final finder = find.byType(RichText);
+      final richTextWidget = widgetTester.firstWidget<RichText>(finder);
+
+      expect(
+        richTextWidget.text.toPlainText(),
+        text.characters.take(1).toString(),
+      );
+
+      await widgetTester.pump(const Duration(milliseconds: 501));
+      final updatedRichTextWidget = widgetTester.firstWidget<RichText>(finder);
+      expect(
+        updatedRichTextWidget.text.toPlainText(),
+        text.characters.take(11).toString(),
+      );
+
+      await widgetTester.pump(const Duration(seconds: 2));
+      final wholeRichTextWidget = widgetTester.firstWidget<RichText>(finder);
+      expect(
+        wholeRichTextWidget.text.toPlainText(),
+        text,
+      );
+    });
   });
 }
